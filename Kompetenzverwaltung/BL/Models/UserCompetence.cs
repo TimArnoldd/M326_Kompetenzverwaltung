@@ -14,6 +14,7 @@ namespace BL.Models
         public int Id { get; set; }
         [Required]
         public virtual Competence Competence { get; set; }
+        public int CompetenceId { get; set; }
         [Required]
         public virtual ApplicationUser User { get; set; }
         [Required]

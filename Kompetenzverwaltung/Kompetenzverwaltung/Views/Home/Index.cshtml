@@ -1,8 +1,70 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@model Kompetenzverwaltung.Models.CompetenceViewModel
+<script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<h1>Gemerkte Kompetenzen </h1>
+<table>
+    @foreach (var pinnedCompetence in Model.PinnedCompetences)
+    {
+        <tr>
+            <td>@pinnedCompetence.Name</td>
+            <td><i id="pinned_@pinnedCompetence.Id" onclick="pinnCompeteneImage(@pinnedCompetence.Id)" style='font-size:24px' class='fas' >&#xf02e;</i></td>
+            <td><i id="unpinned_@pinnedCompetence.Id" onclick="pinnCompeteneImage(@pinnedCompetence.Id)" style='font-size:24px; display: none;' class='far'>&#xf02e;</i></td>
+        </tr>
+    }
+</table>
+
+<h1>Alle Kompetenzen</h1>
+<table>
+    @foreach (var competenceArea in Model.CompatenceAreas)
+    {
+        <tr>
+            <th>
+                @competenceArea.Name
+            </th>
+        </tr>
+        @foreach (var competenceWithSameLevel in competenceArea.Competences.GroupBy(l => l.Level))
+        {
+            <tr>
+                <td>@competenceWithSameLevel.First().Level</td>
+                @foreach (var competence in competenceWithSameLevel)
+                {
+                    <td onclick="location.href='@Url.Action("DetailOfCompetence", "Home")'">@competence.Name</td>
+                    <td><i id="pinned_@competence.Id" onclick="pinnCompeteneImage(@competence.Id)" style='font-size:24px; display: none;' class='fas'>&#xf02e;</i></td>
+                    <td><i id="unpinned_@competence.Id" onclick="pinnCompeteneImage(@competence.Id)" style='font-size:24px;' class='far'>&#xf02e;</i></td>
+                    
+                }
+            </tr>
+        }
+
+    }
+</table>
+<script>
+    function toggle_competences(id){
+        var tableData = document.getElementById(id);
+        console.log(tableData);
+        if(tableData.style.display == "revert")
+        {
+            tableData.style.display = "none";
+        }
+        else if(tableData.style.display == "none")
+        {
+            tableData.style.display = "revert";
+        }
+    }
+    function pinnCompeteneImage(Id){
+        var unpinned = document.getElementById("unpinned_" + Id);
+        var pinned = document.getElementById("pinned_" + Id);
+
+        if (unpinned.style.display == "revert") {
+            pinned.style.display = "none"; //hide the one that is filled out
+            console.log("show the one that is filled out");
+        }
+        else if (unpinned.style.display == "none") {
+            pinned.style.display = "revert"; //show the one that is filled out
+        }
+
+        window.location.href = '@Url.Action("LabelCompetence", "Home")/' + Id;
+    }
+</script>
+
+@*<partial name="/Views/Shared/_PartialCompetence.cshtml" />*@
