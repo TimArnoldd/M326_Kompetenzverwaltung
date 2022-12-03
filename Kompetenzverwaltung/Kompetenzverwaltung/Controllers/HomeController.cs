@@ -1,9 +1,7 @@
-﻿using BL.Data;
-using BL.Models;
+﻿using BL;
 using Kompetenzverwaltung.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using System.Security.Claims;
 
@@ -11,7 +9,6 @@ namespace Kompetenzverwaltung.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ApplicationDbContext _context = new();
         private readonly ILogger<HomeController> _logger;
 
         public HomeController(ILogger<HomeController> logger)
@@ -25,8 +22,8 @@ namespace Kompetenzverwaltung.Controllers
             CompetenceViewModel cvm = new();
 
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            cvm.UserCompetences = _context.UserCompetences.Where(x => x.User.Id == userId).ToList();
-            cvm.CompetenceAreas = _context.CompetenceAreas.Include(x => x.Competences).ToList();
+            cvm.UserCompetences = B.GetUsersUserCompetences(userId);
+            cvm.CompetenceAreas = B.GetAllAreasWithCompetencesLoaded();
             return View(cvm);
         }
 
@@ -43,29 +40,8 @@ namespace Kompetenzverwaltung.Controllers
         public IActionResult InvertPinState(int id)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            Competence? competence = _context.Competences.Find(id);
-            if (competence == null)
-                return RedirectToAction("Index");
-
-            UserCompetence? userCompetence = _context.UserCompetences.FirstOrDefault(x => x.CompetenceId == id && x.User.Id == userId);
-            if (userCompetence == null)
-            {
-                userCompetence = new()
-                {
-                    Competence = competence,
-                    User = _context.Users.First(x => x.Id == userId)
-                };
-                _context.UserCompetences.Add(userCompetence);
-            }
-            userCompetence.Pinned = !userCompetence.Pinned;
-            _context.SaveChanges();
-
+            B.InvertUserCompetencePinState(userId, id);
             return RedirectToAction("Index");
-        }
-
-        public IActionResult DetailOfCompetence()
-        {
-            return View();
         }
 
         public IActionResult Privacy()
