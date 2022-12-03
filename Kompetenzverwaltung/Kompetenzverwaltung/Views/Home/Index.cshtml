@@ -1,70 +1,52 @@
-﻿@model Kompetenzverwaltung.Models.CompetenceViewModel
+﻿@model CompetenceViewModel
+@functions {
+    public string GetPinnedClass(int competenceId)
+    {
+        return Model.UserCompetences.FirstOrDefault(x => x.Competence.Id == competenceId)?.Pinned != true ? "far" : "fas";
+    }
+}
 <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
 
 <h1>Gemerkte Kompetenzen </h1>
 <table>
-    @foreach (var pinnedCompetence in Model.PinnedCompetences)
+    @foreach (var competenceArea in Model.CompetenceAreas)
     {
-        <tr>
-            <td>@pinnedCompetence.Name</td>
-            <td><i id="pinned_@pinnedCompetence.Id" onclick="pinnCompeteneImage(@pinnedCompetence.Id)" style='font-size:24px' class='fas' >&#xf02e;</i></td>
-            <td><i id="unpinned_@pinnedCompetence.Id" onclick="pinnCompeteneImage(@pinnedCompetence.Id)" style='font-size:24px; display: none;' class='far'>&#xf02e;</i></td>
-        </tr>
+        foreach (var pinnedCompetence in Model.UserCompetences.Where(x => x.Pinned).Select(x => x.Competence))
+        {
+            <tr>
+                <td onclick="location.href='@Url.Action("Details", "Home", new { id = pinnedCompetence.Id })'">@pinnedCompetence.Name</td>
+                <td>
+                    <i onclick="location.href='@Url.Action("InvertPinState", "Home", new { id = pinnedCompetence.Id })'"
+                    class="@GetPinnedClass(pinnedCompetence.Id)">&#xf02e;</i>
+                </td>
+            </tr>
+        }
     }
 </table>
 
 <h1>Alle Kompetenzen</h1>
 <table>
-    @foreach (var competenceArea in Model.CompatenceAreas)
+    @foreach (var competenceArea in Model.CompetenceAreas)
     {
         <tr>
             <th>
                 @competenceArea.Name
             </th>
         </tr>
-        @foreach (var competenceWithSameLevel in competenceArea.Competences.GroupBy(l => l.Level))
+        @foreach (var competenceLevel in competenceArea.Competences.GroupBy(x => x.Level).OrderBy(x => x.First().Level))
         {
             <tr>
-                <td>@competenceWithSameLevel.First().Level</td>
-                @foreach (var competence in competenceWithSameLevel)
+                <td>@competenceLevel.First().Level</td>
+                @foreach (var competence in competenceLevel)
                 {
-                    <td onclick="location.href='@Url.Action("DetailOfCompetence", "Home")'">@competence.Name</td>
-                    <td><i id="pinned_@competence.Id" onclick="pinnCompeteneImage(@competence.Id)" style='font-size:24px; display: none;' class='fas'>&#xf02e;</i></td>
-                    <td><i id="unpinned_@competence.Id" onclick="pinnCompeteneImage(@competence.Id)" style='font-size:24px;' class='far'>&#xf02e;</i></td>
-                    
+                    <td onclick="location.href='@Url.Action("Details", "Home", new { id = competence.Id })'">@competence.Name</td>
+                    <td>
+                        <i onclick="location.href='@Url.Action("InvertPinState", "Home", new { id = competence.Id })'"
+                        class="@GetPinnedClass(competence.Id)">&#xf02e;</i>
+                    </td>
                 }
             </tr>
         }
 
     }
 </table>
-<script>
-    function toggle_competences(id){
-        var tableData = document.getElementById(id);
-        console.log(tableData);
-        if(tableData.style.display == "revert")
-        {
-            tableData.style.display = "none";
-        }
-        else if(tableData.style.display == "none")
-        {
-            tableData.style.display = "revert";
-        }
-    }
-    function pinnCompeteneImage(Id){
-        var unpinned = document.getElementById("unpinned_" + Id);
-        var pinned = document.getElementById("pinned_" + Id);
-
-        if (unpinned.style.display == "revert") {
-            pinned.style.display = "none"; //hide the one that is filled out
-            console.log("show the one that is filled out");
-        }
-        else if (unpinned.style.display == "none") {
-            pinned.style.display = "revert"; //show the one that is filled out
-        }
-
-        window.location.href = '@Url.Action("LabelCompetence", "Home")/' + Id;
-    }
-</script>
-
-@*<partial name="/Views/Shared/_PartialCompetence.cshtml" />*@
