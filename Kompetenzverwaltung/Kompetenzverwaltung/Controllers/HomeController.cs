@@ -19,7 +19,7 @@ namespace Kompetenzverwaltung.Controllers
         [Authorize]
         public IActionResult Index()
         {
-            CompetenceViewModel cvm = new();
+            UserOverviewViewModel cvm = new();
 
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             cvm.UserCompetences = B.GetUsersUserCompetences(userId);

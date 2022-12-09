@@ -2,7 +2,7 @@
 
 namespace Kompetenzverwaltung.Models
 {
-    public class CompetenceViewModel
+    public class UserOverviewViewModel
     {
         public List<CompetenceArea> CompetenceAreas { get; set; } = new();
         public List<UserCompetence> UserCompetences { get; set; } = new();
