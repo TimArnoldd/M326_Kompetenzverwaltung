@@ -12,7 +12,7 @@ namespace BL.Models
         [Required]
         public int Id { get; set; }
         [Required]
-        public virtual Competence Competence { get; set; } // CompetenceAreaId in Resources?!?
+        public virtual Competence Competence { get; set; }
         public string DisplayText { get; set; } = string.Empty;
         [Required]
         public string Link { get; set; } = string.Empty;

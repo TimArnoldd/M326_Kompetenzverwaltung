@@ -6,12 +6,12 @@
     }
 }
 @{
-    ViewData["Title"] = "Competence Areas";
+    ViewData["Title"] = "Overview";
 }
 
 
 <div class="pinned-competences">
-    <h1>Gemerkte Kompetenzen </h1>
+    <h1>Pinned Competences</h1>
     <hr />
     <table class="table">
         @foreach (var pinnedCompetence in Model.UserCompetences.Where(x => x.Pinned).Select(x => x.Competence))
@@ -28,7 +28,7 @@
 </div>
 
 <div class="all-competences">
-    <h1>Alle Kompetenzen</h1>
+    <h1>All Competences</h1>
     <hr />
     @foreach (var competenceArea in Model.CompetenceAreas)
     {
