@@ -5,48 +5,57 @@
         return Model.UserCompetences.FirstOrDefault(x => x.Competence.Id == competenceId)?.Pinned != true ? "far" : "fas";
     }
 }
-<script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+@{
+    ViewData["Title"] = "Competence Areas";
+}
 
-<h1>Gemerkte Kompetenzen </h1>
-<table>
-    @foreach (var competenceArea in Model.CompetenceAreas)
-    {
-        foreach (var pinnedCompetence in Model.UserCompetences.Where(x => x.Pinned).Select(x => x.Competence))
+
+<div class="pinned-competences">
+    <h1>Gemerkte Kompetenzen </h1>
+    <hr />
+    <table class="table">
+        @foreach (var pinnedCompetence in Model.UserCompetences.Where(x => x.Pinned).Select(x => x.Competence))
         {
             <tr>
-                <td onclick="location.href='@Url.Action("Details", "Home", new { id = pinnedCompetence.Id })'">@pinnedCompetence.Name</td>
+                <td onclick="location.href='@Url.Action("Details", "Home", new { id = pinnedCompetence.Id })'">@pinnedCompetence.CompetenceArea.Name: @pinnedCompetence.Name</td>
                 <td>
                     <i onclick="location.href='@Url.Action("InvertPinState", "Home", new { id = pinnedCompetence.Id })'"
-                    class="@GetPinnedClass(pinnedCompetence.Id)">&#xf02e;</i>
+                   class="@GetPinnedClass(pinnedCompetence.Id)">&#xf02e;</i>
                 </td>
             </tr>
         }
-    }
-</table>
+    </table>
+</div>
 
-<h1>Alle Kompetenzen</h1>
-<table>
+<div class="all-competences">
+    <h1>Alle Kompetenzen</h1>
+    <hr />
     @foreach (var competenceArea in Model.CompetenceAreas)
     {
-        <tr>
-            <th>
-                @competenceArea.Name
-            </th>
-        </tr>
-        @foreach (var competenceLevel in competenceArea.Competences.GroupBy(x => x.Level).OrderBy(x => x.First().Level))
+        <h4>@competenceArea.Name</h4>
+        if (competenceArea.Competences.Any())
         {
-            <tr>
-                <td>@competenceLevel.First().Level</td>
-                @foreach (var competence in competenceLevel)
-                {
-                    <td onclick="location.href='@Url.Action("Details", "Home", new { id = competence.Id })'">@competence.Name</td>
-                    <td>
-                        <i onclick="location.href='@Url.Action("InvertPinState", "Home", new { id = competence.Id })'"
-                        class="@GetPinnedClass(competence.Id)">&#xf02e;</i>
-                    </td>
-                }
-            </tr>
+            <table class="table">
+                <tbody>
+                    @foreach (var competenceLevel in competenceArea.Competences.GroupBy(x => x.Level).OrderBy(x => x.First().Level))
+                    {
+                        <tr>
+                            <td>@competenceLevel.First().Level</td>
+                            @foreach (var competence in competenceLevel)
+                            {
+                                <td onclick="location.href='@Url.Action("Details", "Home", new { id = competence.Id })'">@competence.Name</td>
+                                <td>
+                                    <i onclick="location.href='@Url.Action("InvertPinState", "Home", new { id = competence.Id })'" class="@GetPinnedClass(competence.Id)">&#xf02e;</i>
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
         }
-
+        else
+        {
+            <p>There are currently no Competences in this Area</p>
+        }
     }
-</table>
+</div>
