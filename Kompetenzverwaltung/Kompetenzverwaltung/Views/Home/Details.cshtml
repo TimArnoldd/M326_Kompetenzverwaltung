@@ -5,7 +5,7 @@
         <h1>@Model.UserCompetence.Competence.Name</h1>
         @Html.HiddenFor(x => x.UserCompetence.Competence.Id)
         @Html.HiddenFor(x => x.UserCompetence.User.Id)
-        <table>
+        <table class="table">
             <tr>
                 <th>
                     @Model.UserCompetence.Competence.Description
