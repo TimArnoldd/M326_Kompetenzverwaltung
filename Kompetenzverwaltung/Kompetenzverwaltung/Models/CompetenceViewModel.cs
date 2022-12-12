@@ -12,6 +12,7 @@ namespace Kompetenzverwaltung.Models
         public List<CompetenceArea> CompetenceAreas { get; set; } = new();
         public List<UserCompetence> UserCompetences { get; set; } = new();
         public UserCompetence UserCompetence { get; set; } = new();
+        [Display(Name ="State")]
         public CompetenceState? CompetenceState { get; set; }
         public int CompetenceId { get; set; }
         public int CompetenceAreaId { get; set; }

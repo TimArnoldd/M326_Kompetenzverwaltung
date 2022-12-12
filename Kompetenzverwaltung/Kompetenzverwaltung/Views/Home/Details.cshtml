@@ -6,23 +6,30 @@
         @Html.HiddenFor(x => x.UserCompetence.Competence.Id)
         @Html.HiddenFor(x => x.UserCompetence.User.Id)
         <table class="table">
-            <tr>
-                <th>
-                    @Model.UserCompetence.Competence.Description
-                </th>
-            </tr>
-            <tr>
-                <td>
-                    <select asp-for="CompetenceState" asp-items="Html.GetEnumSelectList<BL.Enums.CompetenceState>()">
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <input type="submit" value="Save" />
-                </td>
-            </tr>
+            <thead>
+                <tr>
+                    <th>
+                        @Html.LabelFor(x => x.UserCompetence.Competence.Description)
+                    </th>
+                    <th>
+                        @Html.LabelFor(x => x.CompetenceState)
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        @Html.DisplayFor(x => x.UserCompetence.Competence.Description)
+                    </td>
+                    <td>
+                        <select asp-for="CompetenceState" asp-items="Html.GetEnumSelectList<BL.Enums.CompetenceState>()">
+                        </select>
+                    </td>
+                </tr>                
+            </tbody>
         </table>
+        <input type="submit" value="Save" />
+
     }
     <button onclick="location.href='@Url.Action("Index", "Home")'">Go Back</button>
 </body>
