@@ -1,6 +1,8 @@
 ﻿using BL.Data;
+using BL.Enums;
 using BL.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Web.Mvc;
 
 namespace BL
 {
@@ -87,6 +89,14 @@ namespace BL
                 return;
 
             userCompetence.Pinned = !userCompetence.Pinned;
+            _context.SaveChanges();
+        }
+        public static void UpdateCompetenceState(UserCompetence userCompetence, CompetenceState competenceState)
+        {
+            if (userCompetence == null)
+                return;
+            UserCompetence userCompetenceFromDb = _context.UserCompetences.FirstOrDefault(x => x.Id == userCompetence.Id);
+            userCompetenceFromDb.State = competenceState;
             _context.SaveChanges();
         }
 

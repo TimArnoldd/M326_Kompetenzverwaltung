@@ -6,14 +6,15 @@
     }
 }
 <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
-
+<body onload="changeColor()">
 <h1>Gemerkte Kompetenzen </h1>
-<table>
+<table id="pinnedTable">
     @foreach (var competenceArea in Model.CompetenceAreas)
     {
         foreach (var pinnedCompetence in Model.UserCompetences.Where(x => x.Pinned).Select(x => x.Competence))
         {
             <tr>
+                @Html.HiddenFor(x => pinnedCompetence.UserCompetences.FirstOrDefault(x => x.CompetenceId == pinnedCompetence.Id).State)
                 <td onclick="location.href='@Url.Action("Details", "Home", new { id = pinnedCompetence.Id })'">@pinnedCompetence.Name</td>
                 <td>
                     <i onclick="location.href='@Url.Action("InvertPinState", "Home", new { id = pinnedCompetence.Id })'"
@@ -39,7 +40,10 @@
                 <td>@competenceLevel.First().Level</td>
                 @foreach (var competence in competenceLevel)
                 {
-                    <td onclick="location.href='@Url.Action("Details", "Home", new { id = competence.Id })'">@competence.Name</td>
+                    <td onclick="location.href='@Url.Action("Details", "Home", new { id = competence.Id })'">
+                        @competence.Name
+                        @Html.HiddenFor(x => competence.UserCompetences.FirstOrDefault(x => x.CompetenceId == competence.Id).State)
+                    </td>
                     <td>
                         <i onclick="location.href='@Url.Action("InvertPinState", "Home", new { id = competence.Id })'"
                         class="@GetPinnedClass(competence.Id)">&#xf02e;</i>
@@ -50,3 +54,24 @@
 
     }
 </table>
+</body>
+<script>
+    function changeColor() {
+       
+        var input = document.querySelectorAll("input#State");
+        for(var i = 0; i < input.length; i++){
+            var oneInput = input[i];
+            var tr = oneInput.parentNode;
+
+            if(oneInput.value == "New"){
+                tr.style.backgroundColor = "none";
+            }
+            else if(oneInput.value == "InProgress" ){
+                tr.style.backgroundColor = "#ADD8E6";
+            }
+            else if (oneInput.value == "Done") {
+                tr.style.backgroundColor = "green";
+            }
+        }       
+    }
+</script>

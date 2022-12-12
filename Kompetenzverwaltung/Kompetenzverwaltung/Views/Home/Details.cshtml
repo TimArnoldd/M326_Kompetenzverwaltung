@@ -1,1 +1,29 @@
-﻿
+﻿@model CompetenceViewModel
+<html>
+<body>
+    @using(@Html.BeginForm()){
+        <h1>@Model.UserCompetence.Competence.Name</h1>
+        @Html.HiddenFor(x => x.UserCompetence.Competence.Id)
+        @Html.HiddenFor(x => x.UserCompetence.User.Id)
+        <table>
+            <tr>
+                <th>
+                    @Model.UserCompetence.Competence.Description
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    <select asp-for="CompetenceState" asp-items="Html.GetEnumSelectList<BL.Enums.CompetenceState>()">
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="submit" value="Save" />
+                </td>
+            </tr>
+        </table>
+    }
+    <button onclick="location.href='@Url.Action("Index", "Home")'">Go Back</button>
+</body>
+</html>
