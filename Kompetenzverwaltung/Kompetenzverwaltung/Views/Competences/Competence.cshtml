@@ -1,0 +1,46 @@
+﻿@model CompetenceViewModel
+
+@{
+    ViewData["Title"] = string.IsNullOrWhiteSpace(Model.Name) ? "New Competence" : Model.Name;
+}
+
+<h1>@Html.Raw(Model.CompetenceId == 0 ? "Create a new" : "Update a") Competence</h1>
+<h4>@Model.Name</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <input type="hidden" asp-for="CompetenceId" />
+            <input type="hidden" asp-for="CompetenceAreaId" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <textarea asp-for="Description" class="form-control"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Level" class="control-label"></label>
+                <select asp-for="Level" asp-items="Model.Levels" class="form-control"></select>
+                <span asp-validation-for="Level" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="@Html.Raw(Model.CompetenceId == 0 ? "Create" : "Update")" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-route-id="@Model.CompetenceAreaId" asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,49 @@
+﻿@using BL.Models;
+@model CompetencesViewModel
+
+@{
+    ViewData["Title"] = "Competences";
+}
+
+<h1>Manage Competences of @Model.CompetenceAreaName</h1>
+
+<p>
+    <a asp-route-id="@Model.CompetenceAreaId" asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Description
+            </th>
+            <th>
+                Level
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var competence in Model.Competences)
+        {
+            <tr>
+                <td>
+                    @competence.Name
+                </td>
+                <td>
+                    @competence.Description
+                </td>
+                <td>
+                    @competence.Level
+                </td>
+                <td>
+                    <a asp-route-id="@competence.Id" asp-action="Index" asp-controller="Resources">Manage Resources</a> |
+                    <a asp-action="Edit" asp-route-id="@competence.Id">Edit</a> |
+                    @Html.ActionLink("Delete", "Delete", "Competences", new { id = competence.Id }, new { onclick="return confirm('Are you sure you want to delete this Competence (" + competence.Name + ")?')" })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

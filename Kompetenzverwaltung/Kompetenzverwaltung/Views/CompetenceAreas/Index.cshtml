@@ -1,0 +1,43 @@
+﻿@model List<CompetenceAreaViewModel>
+
+@{
+    ViewData["Title"] = "Competence Areas";
+}
+
+<h1>Manage Competence Areas</h1>
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var area in Model)
+        {
+            <tr>
+                <td>
+                    @area.Id
+                </td>
+                <td>
+                    @area.Name
+                </td>
+                <td>
+                    <a asp-route-id="@area.Id" asp-action="Index" asp-controller="Competences">Manage Competences</a> |
+                    <a asp-route-id="@area.Id" asp-action="Edit">Edit</a> |
+                    @Html.ActionLink("Delete", "Delete", "CompetenceAreas", new { id = area.Id }, new { onclick="return confirm('Are you sure you want to delete this Competence Area (" + area.Name + ")?')" })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
