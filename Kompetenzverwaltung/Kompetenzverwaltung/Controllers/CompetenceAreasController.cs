@@ -6,8 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Kompetenzverwaltung.Controllers
 {
-    // TODO: [Authorize(Roles = "Administrator")]
-    [Authorize]
+    [Authorize(Roles = "Administrator")]
     public class CompetenceAreasController : Controller
     {
         public IActionResult Index()
