@@ -1,8 +1,31 @@
-﻿@model UserOverviewViewModel
+﻿@using BL.Enums
+@using BL.Models
+@using System.Security.Claims
+@model UserOverviewViewModel
 @functions {
     public string GetPinnedClass(int competenceId)
     {
         return Model.UserCompetences.FirstOrDefault(x => x.Competence.Id == competenceId)?.Pinned != true ? "far" : "fas";
+    }
+
+    public string GetBackgroundColorString(Competence competence)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var competenceState = Model.UserCompetences.FirstOrDefault(x => x.Competence.Id == competence.Id)?.State;
+        string backgroundColorString;
+        switch (competenceState)
+        {
+            case CompetenceState.InProgress:
+                backgroundColorString = "background-color: #ADD8E6;";
+                break;
+            case CompetenceState.Done:
+                backgroundColorString = "background-color: green;";
+                break;
+            default:
+                backgroundColorString = "";
+                break;
+        }
+        return backgroundColorString;
     }
 }
 <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
@@ -11,77 +34,62 @@
 }
 <body onload="changeColor()">
 
-<div class="pinned-competences">
-    <h1>Pinned Competences</h1>
-    <hr />
-    <table class="table" id="pinnedTable">
-        @foreach (var pinnedCompetence in Model.UserCompetences.Where(x => x.Pinned).Select(x => x.Competence))
-        {
-            <tr>
-                @Html.HiddenFor(x => pinnedCompetence.UserCompetences.FirstOrDefault(x => x.CompetenceId == pinnedCompetence.Id).State)
-                <td onclick="location.href='@Url.Action("Details", "Home", new { id = pinnedCompetence.Id })'">@pinnedCompetence.CompetenceArea.Name: @pinnedCompetence.Name</td>
-                <td>
-                    <i onclick="location.href='@Url.Action("InvertPinState", "Home", new { id = pinnedCompetence.Id })'"
-                   class="@GetPinnedClass(pinnedCompetence.Id)">&#xf02e;</i>
-                </td>
-            </tr>
-        }
-    </table>
-</div>
 
-<div class="all-competences">
-    <h1>All Competences</h1>
-    <hr />
-    @foreach (var competenceArea in Model.CompetenceAreas)
+<h1>Pinned Competences</h1>
+<hr />
+<table class="competencetable" id="pinnedTable">
+    @foreach (var pinnedCompetence in Model.UserCompetences.Where(x => x.Pinned).Select(x => x.Competence))
     {
-        <h4>@competenceArea.Name</h4>
-        if (competenceArea.Competences.Any())
-        {
-                <table class="table">
-                <tbody>
-                    @foreach (var competenceLevel in competenceArea.Competences.GroupBy(x => x.Level).OrderBy(x => x.First().Level))
-                    {
-                        <tr>
-                            <td>@competenceLevel.First().Level</td>
-                            @foreach (var competence in competenceLevel)
-                            {
-                                <td onclick="location.href='@Url.Action("Details", "Home", new { id = competence.Id })'">
-                                    @competence.Name
-                                    @Html.HiddenFor(x => competence.UserCompetences.FirstOrDefault(x => x.CompetenceId == competence.Id).State)
-                                </td>
-                                <td>
-                                    <i onclick="location.href='@Url.Action("InvertPinState", "Home", new { id = competence.Id })'" class="@GetPinnedClass(competence.Id)">&#xf02e;</i>
-                                </td>
-                            }
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        }
-        else
-        {
-            <p>There are currently no Competences in this Area</p>
-        }
-        
+        <tr>
+            <td class="competence" onclick="location.href='@Url.Action("Details", "Home", new { id = pinnedCompetence.Id })'" style="@GetBackgroundColorString(pinnedCompetence)">
+                @pinnedCompetence.CompetenceArea.Name: @pinnedCompetence.Name
+            </td>
+            <td style="min-width:0px;padding-right:0px;">
+                <i onclick="location.href='@Url.Action("InvertPinState", "Home", new { id = pinnedCompetence.Id })'"
+                class="@GetPinnedClass(pinnedCompetence.Id)">&#xf02e;</i>
+            </td>
+        </tr>
     }
-</body>
-<script>
-    function changeColor() {
-       
-        var input = document.querySelectorAll("input#State");
-        for(var i = 0; i < input.length; i++){
-            var oneInput = input[i];
-            var tr = oneInput.parentNode;
+</table>
 
-            if(oneInput.value == "New"){
-                tr.style.backgroundColor = "none";
-            }
-            else if(oneInput.value == "InProgress" ){
-                tr.style.backgroundColor = "#ADD8E6";
-            }
-            else if (oneInput.value == "Done") {
-                tr.style.backgroundColor = "green";
-            }
-        }       
+
+<h1 style="margin-top: 70px;">All Competences</h1>
+<hr />
+@foreach (var competenceArea in Model.CompetenceAreas)
+{
+    <h4 class="competenceArea">@competenceArea.Name</h4>
+    if (competenceArea.Competences.Any())
+    {
+            <table class="competencetable">
+            <tbody>
+                @foreach (var competenceLevel in competenceArea.Competences.GroupBy(x => x.Level).OrderBy(x => x.First().Level))
+                {
+                    <tr class="competence-level">
+                        <td class="competence">@competenceLevel.First().Level</td>
+                        @foreach (var competence in competenceLevel)
+                        {
+                            <td class="competence" onclick="location.href='@Url.Action("Details", "Home", new { id = competence.Id })'">
+                                @competence.Name    
+                                @{
+
+                                }
+                                @Html.HiddenFor(x => competence.UserCompetences.FirstOrDefault(x => x.CompetenceId == competence.Id).State)                                   
+                            </td>
+                            <td style="min-width:0px;padding-right:0px;">
+                                 <i onclick="location.href='@Url.Action("InvertPinState", "Home", new { id = competence.Id })'" class="@GetPinnedClass(competence.Id)">&#xf02e;</i>
+                            </td>
+
+
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
     }
-</script>
+    else
+    {
+        <p>There are currently no Competences in this Area</p>
+    }
+        
+}
+</body>

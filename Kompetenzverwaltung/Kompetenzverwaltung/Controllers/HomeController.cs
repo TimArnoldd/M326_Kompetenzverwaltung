@@ -35,31 +35,28 @@ namespace Kompetenzverwaltung.Controllers
         [Authorize]
         public IActionResult Details(int id)
         {
-            CompetenceViewModel cvm = new();
+            DetailViewModel cvm = new();
 
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var userCompetence = B.GetUserCompetence(userId, id);
             var user = B.GetUser(userId);
             if (userCompetence == null || user == null)
                 return RedirectToAction("Index");
-
+            var resources = B.GetResourcesFromCompetence(id);
+            cvm.Resources = resources;
             cvm.UserCompetence = userCompetence;
             cvm.CompetenceState = userCompetence.State;
             cvm.UserCompetence.User = user;
+            
             
 
             return View(cvm);
         }
         [HttpPost]
-        public IActionResult Details(CompetenceViewModel cvm)
+        [ValidateAntiForgeryToken]
+        public IActionResult Details(DetailViewModel cvm)
         {
-            var userCompetence = B.GetUserCompetence(cvm.UserCompetence.User.Id, cvm.UserCompetence.Competence.Id);
-            if (userCompetence == null)
-                return RedirectToAction("Details");
-
-            cvm.UserCompetence = userCompetence;
-
-            B.UpdateCompetenceState(cvm.UserCompetence, (CompetenceState)cvm.CompetenceState);
+            B.UpdateCompetenceState(cvm.UserCompetence);
             return RedirectToAction("Details");
         }
 

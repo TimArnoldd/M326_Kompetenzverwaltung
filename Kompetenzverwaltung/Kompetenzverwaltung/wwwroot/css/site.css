@@ -15,17 +15,52 @@ html {
 
 body {
   margin-bottom: 60px;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
-table{
-    width:80%;
+.competencetable {
+    display: flex;
+    flex-direction: column;
 }
-table, th, td {
-    border: 1px solid;
+th, td {
+    min-width: 150px;
+    border-right: 3px solid white;
+    border-bottom: 3px solid white;
+    border-right-width: 2px;
+    padding-right: 20px;
 }
-
+td.competence{
+    padding: 40px;
+    padding-bottom: 40px;
+    margin-bottom: 40px;
+    background-color: lightgrey;
+}
+i {
+    padding: 10px;
+    margin-left: -40px;
+}
+.competenceArea{
+    margin-top: 40px;
+    margin-bottom: 20px;
+}
+.competence-level {
+    display: flex;
+    overflow-x: auto;
+    max-width: 100%;
+}
 .all-competences {
     margin-top: 100px;
 }
 .all-competences table:not(:last-child) {
     margin-bottom: 80px;
+}
+button, input{
+    background-color: #002664;
+    border-radius: 8px;
+    border-style:none;
+    box-sizing: border-box;
+    color: #FFFFFF;
+}
+table{
+    margin-bottom: 20px;
+    margin-top: 20px;
 }
