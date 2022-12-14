@@ -213,12 +213,12 @@ namespace BL
             userCompetence.Pinned = !userCompetence.Pinned;
             _context.SaveChanges();
         }
-        public static void UpdateCompetenceState(UserCompetence userCompetence, CompetenceState competenceState)
+        public static void UpdateCompetenceState(UserCompetence userCompetence)
         {
-            if (userCompetence == null)
+            var dbUserCompetence = GetUserCompetence(userCompetence.User.Id, userCompetence.Competence.Id);
+            if (dbUserCompetence == null)
                 return;
-            UserCompetence userCompetenceFromDb = _context.UserCompetences.FirstOrDefault(x => x.Id == userCompetence.Id);
-            userCompetenceFromDb.State = competenceState;
+            dbUserCompetence.State = userCompetence.State;
             _context.SaveChanges();
         }
 

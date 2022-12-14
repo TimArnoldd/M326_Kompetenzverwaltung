@@ -1,7 +1,8 @@
-﻿@model CompetenceViewModel
+﻿@model DetailViewModel
 <html>
 <body>
     @using(@Html.BeginForm()){
+        @Html.AntiForgeryToken()
         <h1>@Model.UserCompetence.Competence.Name</h1>
         @Html.HiddenFor(x => x.UserCompetence.Competence.Id)
         @Html.HiddenFor(x => x.UserCompetence.User.Id)
@@ -22,7 +23,7 @@
                         @Html.DisplayFor(x => x.UserCompetence.Competence.Description)
                     </td>
                     <td>
-                        <select asp-for="CompetenceState" asp-items="Html.GetEnumSelectList<BL.Enums.CompetenceState>()">
+                        <select asp-for="UserCompetence.State" asp-items="Html.GetEnumSelectList<BL.Enums.CompetenceState>()">
                         </select>
                     </td>
                 </tr>                
@@ -30,6 +31,25 @@
         </table>
         <input type="submit" value="Save" />
 
+        <table style="margin-top: 30px; width:50%;" class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.LabelFor(x => x.Resources)
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var resource in Model.Resources)
+                {
+                    <tr>
+                        <td>
+                            <a href="@resource.Link">@resource.DisplayText</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     }
     <button onclick="location.href='@Url.Action("Index", "Home")'">Go Back</button>
 </body>
