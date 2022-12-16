@@ -151,6 +151,10 @@ namespace BL
         {
             return _context.UserCompetences;
         }
+        public IEnumerable<Resource> GetAllResources()
+        {
+            return _context.Resources;
+        }
         public IEnumerable<Resource> GetResourcesFromCompetence(int competenceId)
         {
             return _context.Resources.Where(x => x.Competence.Id == competenceId);
