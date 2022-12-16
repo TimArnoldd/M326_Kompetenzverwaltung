@@ -253,13 +253,13 @@ namespace BL
             var competencesToDelete = _context.Competences.Where(x => x.CompetenceArea.Id == areaId);
             foreach (var competence in competencesToDelete)
             {
-                DeleteCompetence(competence.Id);
+                DeleteCompetence(competence.Id, false);
             }
             _context.CompetenceAreas.Remove(competenceAreaToDelete);
             _context.SaveChanges();
         }
 
-        public void DeleteCompetence(int competenceId)
+        public void DeleteCompetence(int competenceId, bool saveChanges = true)
         {
             var competenceToDelete = GetCompetence(competenceId);
             if (competenceToDelete == null)
@@ -270,9 +270,10 @@ namespace BL
             _context.UserCompetences.RemoveRange(userCompetencesToDelete);
             _context.Resources.RemoveRange(resourcesToDelete);
             _context.Competences.Remove(competenceToDelete);
-            _context.SaveChanges();
+            if (saveChanges)
+                _context.SaveChanges();
         }
-        
+
         public void DeleteResource(int resourceId)
         {
             var resourceToDelete = GetResource(resourceId);
