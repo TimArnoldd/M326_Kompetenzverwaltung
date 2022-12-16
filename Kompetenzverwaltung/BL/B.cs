@@ -119,6 +119,11 @@ namespace BL
                 _context.UserCompetences.Add(userCompetence);
                 _context.SaveChanges();
             }
+            else
+            {
+                userCompetence.User = GetUser(userId);
+                userCompetence.Competence = GetCompetence(competenceId);
+            }
             return userCompetence;
         }
         public Resource? GetResource(int resourceId)
