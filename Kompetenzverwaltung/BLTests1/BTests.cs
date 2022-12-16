@@ -12,7 +12,7 @@ namespace BL.Tests
         private B GetB()
         {
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase("CompetenceManagement")
+                .UseInMemoryDatabase($"CompetenceManagement_{DateTime.Now.Ticks}")
                 .Options;
 
             var context = new ApplicationDbContext(options);

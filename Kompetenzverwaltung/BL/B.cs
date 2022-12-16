@@ -2,6 +2,7 @@
 using BL.Enums;
 using BL.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 using System.Web.Mvc;
 
 namespace BL
@@ -41,7 +42,8 @@ namespace BL
         {
             if (competence == null ||
                 competence.CompetenceArea.Id < 1 ||
-                string.IsNullOrWhiteSpace(competence.Name))
+                string.IsNullOrWhiteSpace(competence.Name) ||
+                string.IsNullOrWhiteSpace(competence.Description))
                 return;
 
             Competence dbCompetence = new()
@@ -61,7 +63,8 @@ namespace BL
             if (resource == null ||
                 resource.Competence.Id < 1 ||
                 string.IsNullOrWhiteSpace(resource.DisplayText) ||
-                string.IsNullOrWhiteSpace(resource.Link))
+                string.IsNullOrWhiteSpace(resource.Link) ||
+                !Regex.IsMatch(resource.Link, @"https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)"))
                 return;
 
             Resource dbResource = new()
