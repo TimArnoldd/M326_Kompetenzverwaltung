@@ -7,12 +7,18 @@ namespace Kompetenzverwaltung.Controllers
 {
     public class ResourcesController : Controller
     {
+        private readonly B b;
+        public ResourcesController()
+        {
+            b = new();
+        }
+
         [HttpGet]
         public IActionResult Index(int id)
         {
             if (id == 0)
                 return RedirectToAction("Index", "Home");
-            var resources = B.GetResourcesFromCompetence(id);
+            var resources = b.GetResourcesFromCompetence(id);
             ResourcesViewModel vm = new()
             {
                 CompetenceId = id,
@@ -30,8 +36,8 @@ namespace Kompetenzverwaltung.Controllers
         [HttpGet]
         public IActionResult Edit(int id)
         {
-            var dbResource = B.GetResource(id);
-            var dbCompetence = B.GetCompetenceFromResourceId(id);
+            var dbResource = b.GetResource(id);
+            var dbCompetence = b.GetCompetenceFromResourceId(id);
             if (dbResource == null ||
                 dbCompetence == null)
                 return RedirectToAction("Index", "Home");
@@ -54,7 +60,7 @@ namespace Kompetenzverwaltung.Controllers
             if (!ModelState.IsValid)
                 return View("Resource", vm);
 
-            var competence = B.GetCompetence(vm.CompetenceId);
+            var competence = b.GetCompetence(vm.CompetenceId);
             if (competence == null)
                 return RedirectToAction("Index", "Home");
 
@@ -68,11 +74,11 @@ namespace Kompetenzverwaltung.Controllers
 
             if (resource.Id == 0)
             {
-                B.CreateResource(resource);
+                b.CreateResource(resource);
             }
             else
             {
-                B.UpdateResource(resource);
+                b.UpdateResource(resource);
             }
 
             return RedirectToAction("Index", new { id = vm.CompetenceId });
@@ -80,8 +86,8 @@ namespace Kompetenzverwaltung.Controllers
 
         public IActionResult Delete(int id)
         {
-            var competence = B.GetCompetenceFromResourceId(id);
-            B.DeleteResource(id);
+            var competence = b.GetCompetenceFromResourceId(id);
+            b.DeleteResource(id);
             return RedirectToAction("Index", new { id = competence?.Id });
         }
     }

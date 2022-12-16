@@ -9,17 +9,23 @@ namespace Kompetenzverwaltung.Controllers
     [Authorize]
     public class CompetencesController : Controller
     {
+        private readonly B b;
+        public CompetencesController()
+        {
+            b = new();
+        }
+
         [HttpGet]
         public IActionResult Index(int id)
         {
-            var competences = B.GetAllCompetencesFromArea(id);
-            var area = B.GetCompetenceArea(id);
+            var competences = b.GetAllCompetencesFromArea(id);
+            var area = b.GetCompetenceArea(id);
             if (area == null)
                 return RedirectToAction("Index", "Home");
 
             CompetencesViewModel vm = new()
             {
-                Competences = competences,
+                Competences = competences.ToList(),
                 CompetenceAreaName = area.Name,
                 CompetenceAreaId = area.Id
             };
@@ -36,8 +42,8 @@ namespace Kompetenzverwaltung.Controllers
         [HttpGet]
         public IActionResult Edit(int id)
         {
-            var dbCompetence = B.GetCompetence(id);
-            var dbCompetenceArea = B.GetCompetenceAreaFromCompetenceId(id);
+            var dbCompetence = b.GetCompetence(id);
+            var dbCompetenceArea = b.GetCompetenceAreaFromCompetenceId(id);
             if (dbCompetence == null ||
                 dbCompetenceArea == null)
                 return RedirectToAction("Index", "Home");
@@ -61,7 +67,7 @@ namespace Kompetenzverwaltung.Controllers
             if (!ModelState.IsValid)
                 return View("Competence", vm);
 
-            var competenceArea = B.GetCompetenceArea(vm.CompetenceAreaId);
+            var competenceArea = b.GetCompetenceArea(vm.CompetenceAreaId);
             if (competenceArea == null)
                 return RedirectToAction("Index", "Home");
 
@@ -76,11 +82,11 @@ namespace Kompetenzverwaltung.Controllers
 
             if (competence.Id == 0) // New entity
             {
-                B.CreateCompetence(competence);
+                b.CreateCompetence(competence);
             }
             else
             {
-                B.UpdateCompetence(competence);
+                b.UpdateCompetence(competence);
             }
 
             return RedirectToAction("Index", new { id = competence.CompetenceArea.Id });
@@ -88,8 +94,8 @@ namespace Kompetenzverwaltung.Controllers
 
         public IActionResult Delete(int id)
         {
-            var competenceArea = B.GetCompetenceAreaFromCompetenceId(id);
-            B.DeleteCompetence(id);
+            var competenceArea = b.GetCompetenceAreaFromCompetenceId(id);
+            b.DeleteCompetence(id);
             return RedirectToAction("Index", new { id = competenceArea?.Id });
         }
     }

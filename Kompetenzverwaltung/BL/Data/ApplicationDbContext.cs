@@ -6,7 +6,16 @@ namespace BL.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
-        public DbSet<ApplicationUser> Users { get; set; }
+        public ApplicationDbContext()
+        {
+
+        }
+        public ApplicationDbContext(DbContextOptions options) : base(options)
+        {
+
+        }
+
+        public override DbSet<ApplicationUser> Users { get; set; }
         public DbSet<Competence> Competences { get; set; }
         public DbSet<CompetenceArea> CompetenceAreas { get; set; }
         public DbSet<UserCompetence> UserCompetences { get; set; }
@@ -15,7 +24,8 @@ namespace BL.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(connectionString: "Server=.\\SQLEXPRESS;Database=M326_Kompetenzverwaltung;Trusted_Connection=True;MultipleActiveResultSets=true");
+            if (!optionsBuilder.IsConfigured)
+                optionsBuilder.UseSqlServer(connectionString: "Server=.\\SQLEXPRESS;Database=M326_Kompetenzverwaltung;Trusted_Connection=True;MultipleActiveResultSets=true");
         }
     }
 }

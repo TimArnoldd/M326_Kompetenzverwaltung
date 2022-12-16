@@ -56,10 +56,17 @@ namespace Kompetenzverwaltung.Controllers
 
             if (user.Id != null)
             {
-                ModelState.Remove("Password");
+                if(user.Password != null)
+                    ModelState.Remove("Password");
+
                 if (ModelState.IsValid)
                 {
                     var appUser = await _userManager.FindByIdAsync(user.Id);
+                    if(user.Password != null)
+                    {
+                        var token = await _userManager.GeneratePasswordResetTokenAsync(appUser);
+                        await _userManager.ResetPasswordAsync(appUser, token, user.Password);
+                    }
                     appUser.UserName = user.Name;
                     appUser.Email = user.Email;
                     if (user.IsAdministrator)

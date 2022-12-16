@@ -6,14 +6,23 @@ using System.Web.Mvc;
 
 namespace BL
 {
-    public static class B
+    public class B
     {
-        private static readonly ApplicationDbContext _context = new();
+        private ApplicationDbContext _context;
+
+        public B()
+        {
+            _context = new();
+        }
+        public B(ApplicationDbContext context)
+        {
+            _context = context;
+        }
 
 
         #region Create
         
-        public static void CreateCompetenceArea(CompetenceArea area)
+        public void CreateCompetenceArea(CompetenceArea area)
         {
             if (area == null ||
                 string.IsNullOrWhiteSpace(area.Name))
@@ -28,7 +37,7 @@ namespace BL
             _context.SaveChanges();
         }
 
-        public static void CreateCompetence(Competence competence)
+        public void CreateCompetence(Competence competence)
         {
             if (competence == null ||
                 competence.CompetenceArea.Id < 1 ||
@@ -47,7 +56,7 @@ namespace BL
             _context.SaveChanges();
         }
 
-        public static void CreateResource(Resource resource)
+        public void CreateResource(Resource resource)
         {
             if (resource == null ||
                 resource.Competence.Id < 1 ||
@@ -70,27 +79,27 @@ namespace BL
 
         #region Read
 
-        public static ApplicationUser? GetUser(string userId)
+        public ApplicationUser? GetUser(string userId)
         {
             return _context.Users.Find(userId);
         }
-        public static Competence? GetCompetence(int competenceId)
+        public Competence? GetCompetence(int competenceId)
         {
             return _context.Competences.Find(competenceId);
         }
-        public static Competence? GetCompetenceFromResourceId(int resourceId)
+        public Competence? GetCompetenceFromResourceId(int resourceId)
         {
             return _context.Resources.Include(x => x.Competence).FirstOrDefault(x => x.Id == resourceId)?.Competence;
         }
-        public static CompetenceArea? GetCompetenceArea(int areaId)
+        public CompetenceArea? GetCompetenceArea(int areaId)
         {
             return _context.CompetenceAreas.Find(areaId);
         }
-        public static CompetenceArea? GetCompetenceAreaFromCompetenceId(int competenceId)
+        public CompetenceArea? GetCompetenceAreaFromCompetenceId(int competenceId)
         {
             return _context.Competences.Include(x => x.CompetenceArea).FirstOrDefault(x => x.Id == competenceId)?.CompetenceArea;
         }
-        public static UserCompetence? GetUserCompetence(string userId, int competenceId)
+        public UserCompetence? GetUserCompetence(string userId, int competenceId)
         {
             UserCompetence? userCompetence = _context.UserCompetences.FirstOrDefault(x => x.User.Id == userId && x.Competence.Id == competenceId);
 
@@ -112,50 +121,50 @@ namespace BL
             }
             return userCompetence;
         }
-        public static Resource? GetResource(int resourceId)
+        public Resource? GetResource(int resourceId)
         {
             return _context.Resources.Find(resourceId);
         }
 
 
-        public static List<CompetenceArea> GetAllAreas()
+        public IEnumerable<CompetenceArea> GetAllAreas()
         {
-            return _context.CompetenceAreas.ToList();
+            return _context.CompetenceAreas;
         }
-        public static List<CompetenceArea> GetAllAreasWithCompetencesLoaded()
+        public IEnumerable<CompetenceArea> GetAllAreasWithCompetencesLoaded()
         {
-            return _context.CompetenceAreas.Include(x => x.Competences).ToList();
+            return _context.CompetenceAreas.Include(x => x.Competences);
         }
-        public static List<Competence> GetAllCompetences()
+        public IEnumerable<Competence> GetAllCompetences()
         {
-            return _context.Competences.ToList();
+            return _context.Competences;
         }
-        public static List<Competence> GetAllCompetencesFromArea(int areaId)
+        public IEnumerable<Competence> GetAllCompetencesFromArea(int areaId)
         {
-            return _context.Competences.Where(x => x.CompetenceArea.Id == areaId).ToList();
+            return _context.Competences.Where(x => x.CompetenceArea.Id == areaId);
         }
-        public static List<UserCompetence> GetUsersUserCompetences(string userId)
+        public IEnumerable<UserCompetence> GetUsersUserCompetences(string userId)
         {
-            return _context.UserCompetences.Where(x => x.User.Id == userId).ToList();
+            return _context.UserCompetences.Where(x => x.User.Id == userId);
         }
-        public static List<UserCompetence> GetAllUserCompetences()
+        public IEnumerable<UserCompetence> GetAllUserCompetences()
         {
-            return _context.UserCompetences.ToList();
+            return _context.UserCompetences;
         }
-        public static List<Resource> GetResourcesFromCompetence(int competenceId)
+        public IEnumerable<Resource> GetResourcesFromCompetence(int competenceId)
         {
-            return _context.Resources.Where(x => x.Competence.Id == competenceId).ToList();
+            return _context.Resources.Where(x => x.Competence.Id == competenceId);
         }
-        public static List<ApplicationUser> GetAllApplicationUsers()
+        public IEnumerable<ApplicationUser> GetAllApplicationUsers()
         {
-            return _context.Users.ToList();
+            return _context.Users;
         }
 
         #endregion
 
         #region Update
 
-        public static void UpdateCompetenceArea(CompetenceArea area)
+        public void UpdateCompetenceArea(CompetenceArea area)
         {
             if (area == null ||
                 area.Id < 1 ||
@@ -170,7 +179,7 @@ namespace BL
             _context.SaveChanges();
         }
 
-        public static void UpdateCompetence(Competence competence)
+        public void UpdateCompetence(Competence competence)
         {
             if (competence == null ||
                 competence.Id < 1 ||
@@ -187,7 +196,7 @@ namespace BL
             _context.SaveChanges();
         }
 
-        public static void UpdateResource(Resource resource)
+        public void UpdateResource(Resource resource)
         {
             if (resource == null ||
                 resource.Id < 1 ||
@@ -204,7 +213,7 @@ namespace BL
             _context.SaveChanges();
         }
 
-        public static void InvertUserCompetencePinState(string userid, int competenceId)
+        public void InvertUserCompetencePinState(string userid, int competenceId)
         {
             UserCompetence? userCompetence = GetUserCompetence(userid, competenceId);
             if (userCompetence == null)
@@ -213,7 +222,7 @@ namespace BL
             userCompetence.Pinned = !userCompetence.Pinned;
             _context.SaveChanges();
         }
-        public static void UpdateCompetenceState(UserCompetence userCompetence)
+        public void UpdateCompetenceState(UserCompetence userCompetence)
         {
             var dbUserCompetence = GetUserCompetence(userCompetence.User.Id, userCompetence.Competence.Id);
             if (dbUserCompetence == null)
@@ -226,7 +235,7 @@ namespace BL
 
         #region Delete
 
-        public static void DeleteCompetenceArea(int areaId)
+        public void DeleteCompetenceArea(int areaId)
         {
             var competenceAreaToDelete = GetCompetenceArea(areaId);
             if (competenceAreaToDelete == null)
@@ -241,7 +250,7 @@ namespace BL
             _context.SaveChanges();
         }
 
-        public static void DeleteCompetence(int competenceId)
+        public void DeleteCompetence(int competenceId)
         {
             var competenceToDelete = GetCompetence(competenceId);
             if (competenceToDelete == null)
@@ -255,7 +264,7 @@ namespace BL
             _context.SaveChanges();
         }
         
-        public static void DeleteResource(int resourceId)
+        public void DeleteResource(int resourceId)
         {
             var resourceToDelete = GetResource(resourceId);
             if (resourceToDelete == null)

@@ -9,9 +9,15 @@ namespace Kompetenzverwaltung.Controllers
     [Authorize(Roles = "Administrator")]
     public class CompetenceAreasController : Controller
     {
+        private readonly B b;
+        public CompetenceAreasController()
+        {
+            b = new();
+        }
+
         public IActionResult Index()
         {
-            var dbAreas = B.GetAllAreas();
+            var dbAreas = b.GetAllAreas();
             var areas = dbAreas.Select(x => new CompetenceAreaViewModel { Id = x.Id, Name = x.Name }).ToList();
             return View(areas);
         }
@@ -25,7 +31,7 @@ namespace Kompetenzverwaltung.Controllers
         [HttpGet]
         public IActionResult Edit(int id)
         {
-            var dbArea = B.GetCompetenceArea(id);
+            var dbArea = b.GetCompetenceArea(id);
             if (dbArea == null)
                 return RedirectToAction("Index");
 
@@ -44,11 +50,11 @@ namespace Kompetenzverwaltung.Controllers
 
             if (area.Id == 0) // New entity
             {
-                B.CreateCompetenceArea(area);
+                b.CreateCompetenceArea(area);
             }
             else
             {
-                B.UpdateCompetenceArea(area);
+                b.UpdateCompetenceArea(area);
             }
 
             return RedirectToAction("Index");
@@ -56,7 +62,7 @@ namespace Kompetenzverwaltung.Controllers
 
         public IActionResult Delete(int id)
         {
-            B.DeleteCompetenceArea(id);
+            b.DeleteCompetenceArea(id);
             return RedirectToAction("Index");
         }
     }
