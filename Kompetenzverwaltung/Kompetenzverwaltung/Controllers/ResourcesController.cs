@@ -48,6 +48,7 @@ namespace Kompetenzverwaltung.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Edit(ResourceViewModel vm)
         {
             if (!ModelState.IsValid)

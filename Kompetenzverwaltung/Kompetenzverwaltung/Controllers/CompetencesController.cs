@@ -55,6 +55,7 @@ namespace Kompetenzverwaltung.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Edit(CompetenceViewModel vm)
         {
             if (!ModelState.IsValid)

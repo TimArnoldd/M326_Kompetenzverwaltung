@@ -68,7 +68,7 @@
                         <td class="competence">@competenceLevel.First().Level</td>
                         @foreach (var competence in competenceLevel)
                         {
-                                <td class="competence" onclick="location.href='@Url.Action("Details", "Home", new { id = competence.Id })'" style="@GetBackgroundColorString(competence)">
+                            <td class="competence" onclick="location.href='@Url.Action("Details", "Home", new { id = competence.Id })'" style="@GetBackgroundColorString(competence)">
                                 @competence.Name
                             </td>
                             <td style="min-width:0px;padding-right:0px;">

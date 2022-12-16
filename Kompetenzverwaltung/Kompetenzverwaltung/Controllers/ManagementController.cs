@@ -49,6 +49,7 @@ namespace Kompetenzverwaltung.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateUser(UserViewModel user)
         {
             ModelState.Remove("Id");
@@ -108,6 +109,7 @@ namespace Kompetenzverwaltung.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<JsonResult> DeleteUser(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
