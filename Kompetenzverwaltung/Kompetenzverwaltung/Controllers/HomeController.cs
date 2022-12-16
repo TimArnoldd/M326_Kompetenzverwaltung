@@ -13,11 +13,11 @@ namespace Kompetenzverwaltung.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly B b;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController()
         {
-            _logger = logger;
+            b = new B();
         }
 
         [Authorize]
@@ -26,8 +26,8 @@ namespace Kompetenzverwaltung.Controllers
             UserOverviewViewModel cvm = new();
 
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            cvm.UserCompetences = B.GetUsersUserCompetences(userId);
-            cvm.CompetenceAreas = B.GetAllAreasWithCompetencesLoaded();
+            cvm.UserCompetences = b.GetUsersUserCompetences(userId).ToList();
+            cvm.CompetenceAreas = b.GetAllAreasWithCompetencesLoaded().ToList();
             return View(cvm);
         }
 
@@ -38,12 +38,12 @@ namespace Kompetenzverwaltung.Controllers
             DetailViewModel cvm = new();
 
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var userCompetence = B.GetUserCompetence(userId, id);
-            var user = B.GetUser(userId);
+            var userCompetence = b.GetUserCompetence(userId, id);
+            var user = b.GetUser(userId);
             if (userCompetence == null || user == null)
                 return RedirectToAction("Index");
-            var resources = B.GetResourcesFromCompetence(id);
-            cvm.Resources = resources;
+            var resources = b.GetResourcesFromCompetence(id);
+            cvm.Resources = resources.ToList();
             cvm.UserCompetence = userCompetence;
             cvm.CompetenceState = userCompetence.State;
             cvm.UserCompetence.User = user;
@@ -56,7 +56,7 @@ namespace Kompetenzverwaltung.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Details(DetailViewModel cvm)
         {
-            B.UpdateCompetenceState(cvm.UserCompetence);
+            b.UpdateCompetenceState(cvm.UserCompetence);
             return RedirectToAction("Details");
         }
 
@@ -64,7 +64,7 @@ namespace Kompetenzverwaltung.Controllers
         public IActionResult InvertPinState(int id)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            B.InvertUserCompetencePinState(userId, id);
+            b.InvertUserCompetencePinState(userId, id);
             return RedirectToAction("Index");
         }
 
